@@ -71,7 +71,7 @@ int main(void)
     }
 
     // Create the application structure and set the activate event handler.
-    app = gtk_application_new("mcc134.dataLogger", G_APPLICATION_FLAGS_NONE);
+    app = gtk_application_new("mcc134.dataLogger", G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "activate", G_CALLBACK(app_activate_handler), NULL);
 
     // Start running the GTK appliction.
@@ -879,9 +879,20 @@ static void app_activate_handler(GtkApplication *app, gpointer user_data)
     gtk_databox_ruler_set_draw_subticks(rulerX, FALSE);
 
     // Set the background color for the graphs
+#if 1
+    GtkCssProvider *provider = gtk_css_provider_new();
+    gtk_css_provider_load_from_data(provider,
+        "widget_name { background-color: #d9d9d9; }", -1, NULL);
+    gtk_style_context_add_provider(
+        gtk_widget_get_style_context(dataBox),
+        GTK_STYLE_PROVIDER(provider),
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(provider);
+#else
     gdk_rgba_parse (&background_color, "#d9d9d9");
-    pgtk_widget_override_background_color(dataBox, GTK_STATE_FLAG_NORMAL,
+    gtk_widget_override_background_color(dataBox, GTK_STATE_FLAG_NORMAL,
                                           &background_color);
+#endif
 
     /******** Log file name display ********/
     hboxFile = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
