@@ -605,7 +605,6 @@ static void app_activate_handler(GtkApplication *app, gpointer user_data)
               *btnZoomOutY, *separator;
     GtkWidget *legend[MAX_CHANNELS];
     GtkDataboxRuler *rulerY, *rulerX;
-    GdkRGBA background_color;
     PangoAttrList *titleAttrs;
     PangoAttribute *bold;
     GtkStyleContext *styleContext;
@@ -809,9 +808,14 @@ static void app_activate_handler(GtkApplication *app, gpointer user_data)
     gtk_databox_ruler_set_draw_subticks(rulerX, FALSE);
 
     // Set the background color for the graphs
-    gdk_rgba_parse (&background_color, "#d9d9d9");
-    pgtk_widget_override_background_color(dataBox, GTK_STATE_FLAG_NORMAL,
-                                          &background_color);
+    GtkCssProvider *provider = gtk_css_provider_new();
+    gtk_css_provider_load_from_data(provider,
+        "widget_name { background-color: #d9d9d9; }", -1, NULL);
+    gtk_style_context_add_provider(
+        gtk_widget_get_style_context(dataBox),
+        GTK_STYLE_PROVIDER(provider),
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(provider);
 
     /******** Log file name display ********/
     hboxFile = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
