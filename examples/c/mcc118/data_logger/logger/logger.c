@@ -69,7 +69,7 @@ int main(void)
     }
 
     // Create the application structure and set the activate event handler.
-    app = gtk_application_new("mcc118.dataLogger", G_APPLICATION_FLAGS_NONE);
+    app = gtk_application_new("mcc118.dataLogger", G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "activate", G_CALLBACK(app_activate_handler), NULL);
 
     // Start running the GTK appliction.
